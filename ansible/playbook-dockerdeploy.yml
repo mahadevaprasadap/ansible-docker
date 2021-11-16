@@ -1,0 +1,36 @@
+-
+  name: To install Docker - Dockerized Python web app with mongo db
+  hosts: target1
+  gather_facts: true
+  become: yes
+  roles:
+    - install-docker-on-ubuntu
+    #- deploy-docker
+
+  post_tasks:
+    - name: Install rsync to copy docker folder
+      apt:
+        name: rsync 
+        state: present
+
+    - name: Make sure docker-compose is installed
+      pip: 
+        name: docker-compose
+        state: present
+    
+    - name: Copy docker folder to managed host
+      synchronize: 
+        src: ../docker/
+        dest: /tmp/
+        recursive: yes
+      become: no
+
+
+    - name: Deploy containers using docker-compose command
+      docker_compose: 
+        project_src: /tmp/docker
+        build: yes
+        scale: 
+          flask: 2
+        state: present
+        

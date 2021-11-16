@@ -1,0 +1,3 @@
+docker/app/mongodb/
+docker/app/__pycache__/
+docker/app/venv/
