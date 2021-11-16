@@ -1,9 +1,5 @@
 ---
-# tasks file for install-docker-centos
-- name: test
-  debug:
-    var: ansible_distribution_release
-
+# tasks file for install-docker-on-ubuntu
 - name: Update the apt package index and install packages to allow apt to use a repository over HTTPS
   ansible.builtin.apt:
     name: '{{ item }}'
@@ -13,7 +9,6 @@
     - ca-certificates
     - curl 
     - gnupg
-    
     - lsb-release
     - python3-pip
 

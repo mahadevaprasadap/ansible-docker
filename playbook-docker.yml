@@ -1,24 +1,24 @@
--
-  name: To install Docker - Dockerized Python web app with mongo db
-  hosts: all
-  gather_facts: true
+---
+# This playbook uses "install-docker-on-ubuntu" role to install docker on Ubuntu environment
+- name: Install docker on Ubuntu and Deploy web Server
+  hosts: target1
   become: yes
+  gather_facts: yes
   tasks:
-    - name: Install docker
-      include_role: 
-        name: install-docker-on-ubuntu
+    - name: calling role.
+      include_role:
+        name: install_docker_on_ubuntu
 
     - name: Make sure docker-compose is installed
       pip: 
         name: docker-compose
         state: present
     
-    - name: Download docker folder to managed host
+    - name: Copy docker folder to managed host
       git: 
         repo: https://github.com/mahadevaprasadap/ansible-docker.git
         dest: /tmp/ansible-docker
         separate_git_dir: /tmp/ansible-docker.git
-
 
     - name: Deploy containers using docker-compose command
       docker_compose: 
@@ -27,11 +27,3 @@
         scale: 
           flask: 2
         state: present
-
-    - name: Remove downloaded file from tmp/ path
-      file: 
-        path: '{{ item }}'
-        state: absent
-      with_items:
-        - /tmp/ansible-docker
-        - /tmp/ansible-docker.git
